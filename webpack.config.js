@@ -1,5 +1,3 @@
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
 const path = require('path')
 
 module.exports = {
@@ -30,10 +28,7 @@ module.exports = {
       "/api": "http://localhost:8080"
     }
   },
-  plugins: [
-    new CleanWebpackPlugin(['dist']),
-    new HtmlWebpackPlugin({
-      template: "./public/index.html"
-    })
-  ]
+  resolve: {
+    extensions: ['.js', '.jsx', '.ts', '.tsx']
+  }
 };

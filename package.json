@@ -8,7 +8,7 @@
     "server": "nodemon dist/app.js",
     "compile-watch": "tsc -w",
     "compile": "tsc",
-    "compile-client": "webpack && cp public/index.html dist"
+    "compile-client": "webpack --display-error-details && cp public/index.html dist"
   },
   "author": "",
   "license": "ISC",
@@ -26,6 +26,8 @@
     "@types/express": "^4.11.1",
     "@types/node": "^10.3.0",
     "@types/react": "^16.3.16",
+    "@types/react-dom": "^16.0.6",
+    "awesome-typescript-loader": "^5.0.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.7.0",
