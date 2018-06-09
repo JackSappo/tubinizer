@@ -8,7 +8,7 @@
     "server": "nodemon dist/app.js",
     "compile-watch": "tsc -w",
     "compile": "tsc",
-    "compile-client": "webpack"
+    "compile-client": "webpack && cp public/index.html dist"
   },
   "author": "",
   "license": "ISC",
