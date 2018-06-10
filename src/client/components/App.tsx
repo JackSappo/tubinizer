@@ -2,8 +2,9 @@ import * as React from 'react';
 import * as axios from 'axios';
 import { YT_CHANNELS_URL, YT_PLAYLISTITEMS_URL } from '../../constants';
 import { API_KEY, CHANNEL_ID } from '../../config';
+import { FavoriteItem } from './FavoriteItem';
 
-export class App extends React.Component {
+export class App extends React.Component<{}, State> {
   constructor(props) {
     super(props);
     this.state = {
@@ -15,15 +16,21 @@ export class App extends React.Component {
   public async componentDidMount() {
     //TYPES & ASYNC AWAIT
     const playlistId = await this.getPlaylistId('favorites');
-    console.log('~= FAVORITES PLAYLIST ID IS', playlistId)
     const favorites = await this.getFavoritesItems(playlistId);
-    console.log('~= FAVORITES ARE', favorites)
+    this.setState({
+      favorites,
+      isLoading: false,
+    })
   }
 
   public render() {
-    console.log()
+    if (this.state.isLoading) {
+      return <div>Sup I'm loading</div>
+    }
     return (
-      <div>Sup I'm a classy dom</div>
+      <div>
+        {this.state.favorites.map(item => <FavoriteItem item={item}/>)}
+      </div>
     )
   }
 
@@ -66,7 +73,7 @@ interface FavoritesOptions {
   maxResults?: string
 }
 
-interface PlaylistItem {
+export interface PlaylistItem {
   kind: 'youtube#playlistItem';
   etag: string;
   id: string;
@@ -97,4 +104,9 @@ interface Thumbnail {
   url: string;
   width: number;
   height: number;
+}
+
+interface State {
+  isLoading: boolean;
+  favorites: PlaylistItem[];
 }
