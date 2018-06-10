@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as axios from 'axios';
-import { YT_CHANNELS_URL } from '../../constants';
+import { YT_CHANNELS_URL, YT_PLAYLISTITEMS_URL } from '../../constants';
 import { API_KEY, CHANNEL_ID } from '../../config';
 
 export class App extends React.Component {
@@ -15,8 +15,9 @@ export class App extends React.Component {
   public async componentDidMount() {
     //TYPES & ASYNC AWAIT
     const playlistId = await this.getPlaylistId('favorites');
-
     console.log('~= FAVORITES PLAYLIST ID IS', playlistId)
+    const favorites = await this.getFavoritesItems(playlistId);
+    console.log('~= FAVORITES ARE', favorites)
   }
 
   public render() {
@@ -30,8 +31,8 @@ export class App extends React.Component {
     //TODO: axios type
     const { data } = await axios['get'](YT_CHANNELS_URL, {
       params: {
-        part: 'contentDetails',
         key: API_KEY,
+        part: 'contentDetails',
         id: CHANNEL_ID
       }
     });
@@ -46,4 +47,54 @@ export class App extends React.Component {
 
     return data.items[0].contentDetails.relatedPlaylists[type];
   }
+
+  private async getFavoritesItems(playlistId: string, options: FavoritesOptions = {}): Promise<PlaylistItem[]> {
+    const { data } = await axios['get'](YT_PLAYLISTITEMS_URL, {
+      params: {
+        key: API_KEY,
+        part: 'snippet,contentDetails',
+        maxResults: options.maxResults || '5',
+        playlistId
+      }
+    })
+
+    return data.items;
+  }
+}
+
+interface FavoritesOptions {
+  maxResults?: string
+}
+
+interface PlaylistItem {
+  kind: 'youtube#playlistItem';
+  etag: string;
+  id: string;
+  snippet: {
+    publishedAt: string;
+    channelId: string;
+    title: string;
+    description: string;
+    thumbnails: {
+      default: Thumbnail;
+      medium: Thumbnail;
+      high: Thumbnail;
+      standard: Thumbnail;
+      maxres: Thumbnail;
+    }
+    channelTitle: string;
+    playlistId: string;
+    position: number;
+    resourceId: any;
+  }
+  contentDetails: {
+    videoId: string;
+    videoPublishedAt: string;
+  }
+}
+
+interface Thumbnail {
+  url: string;
+  width: number;
+  height: number;
 }
