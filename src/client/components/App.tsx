@@ -27,7 +27,7 @@ export class App extends React.Component {
     )
   }
 
-  private async getPlaylistId(type: 'favorites' | 'uploads') {
+  private async getPlaylistId(type: 'favorites' | 'uploads'): Promise<string> {
     //TODO: axios type
     const { data } = await axios['get'](YT_CHANNELS_URL, {
       params: {
