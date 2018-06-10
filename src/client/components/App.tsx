@@ -3,6 +3,8 @@ import * as axios from 'axios';
 import { YT_CHANNELS_URL, YT_PLAYLISTITEMS_URL } from '../../constants';
 import { API_KEY, CHANNEL_ID } from '../../config';
 import { FolderContents } from './Contents/FolderContents';
+import { FolderList } from './Folders/FolderList'
+import './styles.css';
 
 export class App extends React.Component<{}, State> {
   constructor(props) {
@@ -28,8 +30,8 @@ export class App extends React.Component<{}, State> {
       return <div>Sup I'm loading</div>
     }
     return (
-      <div>
-        <div>Left bar</div>
+      <div id="app-container">
+        <FolderList />
         <FolderContents items={this.state.favorites}/>
       </div>
     )

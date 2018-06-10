@@ -4,7 +4,11 @@ import { PlaylistItem } from '../App';
 
 export class FolderContents extends React.Component<Props, {}> {
   public render() {
-    return this.props.items.map(item => <FavoriteItem item={item}/>)
+    return (
+      <div id="folder-contents">
+        {this.props.items.map(item => <FavoriteItem item={item}/>)}
+      </div>
+    )
   }
 }
 
