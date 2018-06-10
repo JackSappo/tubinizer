@@ -3,10 +3,21 @@
 }
 
 #sidebar {
-  flex: 1;
-  color: red;
+  margin-right: 10px;
 }
 
 #folder-contents {
   flex: 1;
+}
+
+.fl-item {
+  cursor: pointer;
+}
+
+.fl-icon {
+  font-size: 56px;
+}
+
+.fl-text {
+  text-align: center;
 }
