@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { PlaylistItem } from './App';
+import { PlaylistItem } from '../App';
 
 
 export class FavoriteItem extends React.Component<Props, {}> {

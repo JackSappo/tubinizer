@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as axios from 'axios';
 import { YT_CHANNELS_URL, YT_PLAYLISTITEMS_URL } from '../../constants';
 import { API_KEY, CHANNEL_ID } from '../../config';
-import { FavoriteItem } from './FavoriteItem';
+import { FolderContents } from './Contents/FolderContents';
 
 export class App extends React.Component<{}, State> {
   constructor(props) {
@@ -29,7 +29,8 @@ export class App extends React.Component<{}, State> {
     }
     return (
       <div>
-        {this.state.favorites.map(item => <FavoriteItem item={item}/>)}
+        <div>Left bar</div>
+        <FolderContents items={this.state.favorites}/>
       </div>
     )
   }
