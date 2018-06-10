@@ -8,7 +8,10 @@
     "server": "nodemon dist/app.js",
     "compile-watch": "tsc -w",
     "compile": "tsc",
-    "compile-client": "webpack --display-error-details && cp public/index.html dist"
+    "compile-client": "webpack --display-error-details && cp public/index.html dist",
+    "compile-client-watch": "npm run clean && npm run copy-index && webpack --watch",
+    "copy-index": "cp public/index.html dist",
+    "clean": "rm -rf dist && mkdir dist"
   },
   "author": "",
   "license": "ISC",
