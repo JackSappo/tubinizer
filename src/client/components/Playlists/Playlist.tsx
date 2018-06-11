@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { PlaylistMetadata } from '../App';
 
 export class Playlist extends React.Component<Props, {}> {
   public render() {
@@ -7,7 +8,7 @@ export class Playlist extends React.Component<Props, {}> {
       <div className="fl-item">
         <i className="fl-icon fa fa-folder" /> <br/>
         <span className="fl-text">
-          {playlist.title}
+          {playlist.snippet.title}
         </span>
       </div>
     )
@@ -15,7 +16,7 @@ export class Playlist extends React.Component<Props, {}> {
 }
 
 interface Props {
-  playlist: Video
+  playlist: PlaylistMetadata
 }
 
 interface Video {

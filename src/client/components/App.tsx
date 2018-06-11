@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as axios from 'axios';
-import { YT_CHANNELS_URL, YT_PLAYLISTITEMS_URL } from '../../constants';
+import { YT_CHANNELS_URL, YT_PLAYLISTITEMS_URL, YT_PLAYLISTS_URL } from '../../constants';
 import { API_KEY, CHANNEL_ID } from '../../config';
 import { PlaylistContents } from './Contents/PlaylistContents';
 import { PlaylistList } from './Playlists/PlaylistList'
@@ -11,15 +11,15 @@ export class App extends React.Component<{}, State> {
     super(props);
     this.state = {
       isLoading: true,
-      favorites: []
+      playlists: [],
     }
   }
 
   public async componentDidMount() {
-    const playlistId = await this.getPlaylistId('favorites');
-    const favorites = await this.getFavoritesItems(playlistId);
+    const playlists = await this.getPlaylists();
+    console.log('~= PLAYLISTS ARE', playlists);
     this.setState({
-      favorites,
+      playlists,
       isLoading: false,
     })
   }
@@ -30,31 +30,24 @@ export class App extends React.Component<{}, State> {
     }
     return (
       <div id="app-container">
-        <PlaylistList />
-        <PlaylistContents items={this.state.favorites}/>
+        <PlaylistList playlists={this.state.playlists}/>
+        <PlaylistContents items={[]}/>
       </div>
     )
   }
 
-  private async getPlaylistId(type: 'favorites' | 'uploads'): Promise<string> {
+  private async getPlaylists(): Promise<PlaylistMetadata[]> {
     //TODO: axios type
-    const { data } = await axios['get'](YT_CHANNELS_URL, {
+    const { data } = await axios['get'](YT_PLAYLISTS_URL, {
       params: {
         key: API_KEY,
-        part: 'contentDetails',
-        id: CHANNEL_ID
+        part: 'snippet,contentDetails',
+        maxResults: '20',
+        channelId: CHANNEL_ID,
       }
-    });
+    })
 
-    console.log('~= RESPONSE IS', data)
-
-    if (data.pageInfo.totalResults === 0) {
-      throw new Error('No channels found with provided ID')
-    } else if (data.pageInfo.totalResults !== 1) {
-      throw new Error ('Found more than 1 channel with provided ID')
-    }
-
-    return data.items[0].contentDetails.relatedPlaylists[type];
+    return data.items;
   }
 
   private async getFavoritesItems(playlistId: string, options: FavoritesOptions = {}): Promise<VideoMetadata[]> {
@@ -75,10 +68,13 @@ interface FavoritesOptions {
   maxResults?: string
 }
 
-export interface VideoMetadata {
+interface YTMetadata {
   kind: 'youtube#playlistItem';
   etag: string;
   id: string;
+}
+
+export interface VideoMetadata extends YTMetadata {
   snippet: {
     publishedAt: string;
     channelId: string;
@@ -102,6 +98,22 @@ export interface VideoMetadata {
   }
 }
 
+export interface PlaylistMetadata extends YTMetadata {
+  snippet: {
+    publishedAt: string;
+    channelId: string;
+    title: string;
+    description: string;
+    thumbnails: {
+      default: Thumbnail;
+      medium: Thumbnail;
+      high: Thumbnail;
+    }
+    channelTitle: string;
+    localized: string;
+  }
+}
+
 interface Thumbnail {
   url: string;
   width: number;
@@ -110,5 +122,6 @@ interface Thumbnail {
 
 interface State {
   isLoading: boolean;
-  favorites: VideoMetadata[];
+  playlists: PlaylistMetadata[];
+  // favorites: VideoMetadata[];
 }
