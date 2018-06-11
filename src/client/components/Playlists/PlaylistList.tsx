@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { FolderItem } from './FolderItem';
+import { Playlist } from './Playlist';
 
-const folderList = [
+const playlistList = [
   {
     title: 'Funny'
   },
@@ -16,11 +16,11 @@ const folderList = [
   }
 ]
 
-export class FolderList extends React.Component {
+export class PlaylistList extends React.Component {
   render() {
     return (
       <div id="sidebar">
-        {folderList.map(folder => <FolderItem folder= {folder} /> )}
+        {playlistList.map(playlist => <Playlist playlist= {playlist} /> )}
       </div>
     )
   }

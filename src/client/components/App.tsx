@@ -2,8 +2,8 @@ import * as React from 'react';
 import * as axios from 'axios';
 import { YT_CHANNELS_URL, YT_PLAYLISTITEMS_URL } from '../../constants';
 import { API_KEY, CHANNEL_ID } from '../../config';
-import { FolderContents } from './Contents/FolderContents';
-import { FolderList } from './Folders/FolderList'
+import { PlaylistContents } from './Contents/PlaylistContents';
+import { PlaylistList } from './Playlists/PlaylistList'
 import './styles.css';
 
 export class App extends React.Component<{}, State> {
@@ -16,7 +16,6 @@ export class App extends React.Component<{}, State> {
   }
 
   public async componentDidMount() {
-    //TYPES & ASYNC AWAIT
     const playlistId = await this.getPlaylistId('favorites');
     const favorites = await this.getFavoritesItems(playlistId);
     this.setState({
@@ -31,8 +30,8 @@ export class App extends React.Component<{}, State> {
     }
     return (
       <div id="app-container">
-        <FolderList />
-        <FolderContents items={this.state.favorites}/>
+        <PlaylistList />
+        <PlaylistContents items={this.state.favorites}/>
       </div>
     )
   }
@@ -58,7 +57,7 @@ export class App extends React.Component<{}, State> {
     return data.items[0].contentDetails.relatedPlaylists[type];
   }
 
-  private async getFavoritesItems(playlistId: string, options: FavoritesOptions = {}): Promise<PlaylistItem[]> {
+  private async getFavoritesItems(playlistId: string, options: FavoritesOptions = {}): Promise<VideoMetadata[]> {
     const { data } = await axios['get'](YT_PLAYLISTITEMS_URL, {
       params: {
         key: API_KEY,
@@ -76,7 +75,7 @@ interface FavoritesOptions {
   maxResults?: string
 }
 
-export interface PlaylistItem {
+export interface VideoMetadata {
   kind: 'youtube#playlistItem';
   etag: string;
   id: string;
@@ -111,5 +110,5 @@ interface Thumbnail {
 
 interface State {
   isLoading: boolean;
-  favorites: PlaylistItem[];
+  favorites: VideoMetadata[];
 }

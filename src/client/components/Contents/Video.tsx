@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { PlaylistItem } from '../App';
+import { VideoMetadata } from '../App';
 
 
-export class FavoriteItem extends React.Component<Props, {}> {
+export class Video extends React.Component<Props, {}> {
   public render() {
     const { item } = this.props;
 
@@ -15,5 +15,5 @@ export class FavoriteItem extends React.Component<Props, {}> {
 }
 
 interface Props {
-  item: PlaylistItem
+  item: VideoMetadata
 }
