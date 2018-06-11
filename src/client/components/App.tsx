@@ -40,6 +40,7 @@ export class App extends React.Component<{}, State> {
         <PlaylistList 
           playlists={this.state.playlists} 
           selectedPlaylistId={this.state.selectedPlaylistId}
+          selectedVideoId={this.state.selectedVideoId}
           getPlaylistItems={this.getPlaylistItems}
         />
         <VideoList 
@@ -104,7 +105,12 @@ export class App extends React.Component<{}, State> {
   }
 
   private moveVideo(playlistId) {
-
+    /*
+      Add video to other playlist.
+      If successful, remove video from og playlist (should still be the one in props)
+      Q: How do we know ID of old playlist? I guess it's what's currently selected
+    */
+    //TODO: Should never be able to only add or remove unless both are done
   }
 }
 

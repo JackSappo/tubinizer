@@ -13,7 +13,7 @@ export class Playlist extends React.Component<Props, {}> {
   }
 
   public render() {
-    const { playlist, selectedPlaylistId } = this.props;
+    const { playlist, selectedVideoId, selectedPlaylistId } = this.props;
     const isSelected = selectedPlaylistId === playlist.id;
 
     const className = classnames(
@@ -26,9 +26,19 @@ export class Playlist extends React.Component<Props, {}> {
       isSelected ? 'fa-folder-open' : 'fa-folder'
     )
 
+    const renderMover = () => selectedVideoId 
+      ? (
+        <span className="pl-mover">
+          <i className="fa fa-arrow-alt-circle-left" />
+        </span>
+      ) : null;
+
+    
+
     return (
       <div className={className} onClick={this.selectPlaylist}>
         <i className={faClass} />
+        { renderMover() }
         <br/>
         <span className="pl-text">
           {playlist.snippet.title}
@@ -41,6 +51,7 @@ export class Playlist extends React.Component<Props, {}> {
 interface Props {
   playlist: PlaylistMetadata
   selectedPlaylistId: string;
+  selectedVideoId: string;
   getPlaylistItems: (playlistId: string, options?: object) => Promise<void>
 }
 

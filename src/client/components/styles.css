@@ -22,7 +22,13 @@
 }
 
 .pl-icon {
-  font-size: 56px;
+  font-size: 42pt;
+}
+
+.pl-mover {
+  font-size: 24pt;
+  float: right;
+  line-height: 42pt;
 }
 
 .pl-text {

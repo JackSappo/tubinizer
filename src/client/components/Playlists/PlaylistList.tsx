@@ -4,13 +4,14 @@ import { PlaylistMetadata } from '../../../types/YTMetadata';
 
 export class PlaylistList extends React.Component<Props, {}> {
   render() {
-    const { playlists, selectedPlaylistId, getPlaylistItems } = this.props;
+    const { playlists, selectedPlaylistId, selectedVideoId, getPlaylistItems } = this.props;
     return (
       <div id="sidebar">
         {playlists.map(playlist => 
           <Playlist 
             playlist={playlist}
             selectedPlaylistId={selectedPlaylistId}
+            selectedVideoId={selectedVideoId}
             getPlaylistItems={getPlaylistItems}
           /> 
         )}
@@ -22,5 +23,6 @@ export class PlaylistList extends React.Component<Props, {}> {
 interface Props {
   playlists: PlaylistMetadata[];
   selectedPlaylistId: string;
+  selectedVideoId: string;
   getPlaylistItems: (playlistId: string, options?: object) => Promise<void>;
 }
