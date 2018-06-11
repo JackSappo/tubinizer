@@ -24,3 +24,7 @@
 .fl-text {
   text-align: center;
 }
+
+.item {
+  cursor: default;
+}

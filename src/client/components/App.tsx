@@ -2,8 +2,9 @@ import * as React from 'react';
 import * as axios from 'axios';
 import { YT_CHANNELS_URL, YT_PLAYLISTITEMS_URL, YT_PLAYLISTS_URL } from '../../constants';
 import { API_KEY, CHANNEL_ID } from '../../config';
-import { PlaylistContents } from './Contents/PlaylistContents';
+import { VideoList } from './Contents/VideoList';
 import { PlaylistList } from './Playlists/PlaylistList'
+import { PlaylistMetadata, VideoMetadata } from '../../types/YTMetadata';
 import './styles.css';
 
 export class App extends React.Component<{}, State> {
@@ -34,7 +35,7 @@ export class App extends React.Component<{}, State> {
     return (
       <div id="app-container">
         <PlaylistList playlists={this.state.playlists} getPlaylistItems={this.getPlaylistItems}/>
-        <PlaylistContents items={this.state.playlistItems}/>
+        <VideoList items={this.state.playlistItems}/>
       </div>
     )
   }
@@ -53,7 +54,7 @@ export class App extends React.Component<{}, State> {
     return data.items;
   }
 
-  private async getPlaylistItems(playlistId: string, options: FavoritesOptions = {}): Promise<void> {
+  private async getPlaylistItems(playlistId: string, options: FetchPIOptions = {}): Promise<void> {
     console.log('~= GETTING FOR ID', playlistId)
 
     //TODO: axios type
@@ -74,63 +75,8 @@ export class App extends React.Component<{}, State> {
   }
 }
 
-interface FavoritesOptions {
+interface FetchPIOptions {
   maxResults?: string
-}
-
-interface YTMetadata {
-  kind: 'youtube#playlistItem';
-  etag: string;
-  id: string;
-}
-
-export interface VideoMetadata extends YTMetadata {
-  snippet: {
-    publishedAt: string;
-    channelId: string;
-    title: string;
-    description: string;
-    thumbnails: {
-      default: Thumbnail;
-      medium: Thumbnail;
-      high: Thumbnail;
-      standard: Thumbnail;
-      maxres: Thumbnail;
-    }
-    channelTitle: string;
-    playlistId: string;
-    position: number;
-    resourceId: any;
-  }
-  contentDetails: {
-    videoId: string;
-    videoPublishedAt: string;
-  }
-}
-
-export interface PlaylistMetadata extends YTMetadata {
-  snippet: {
-    publishedAt: string;
-    channelId: string;
-    title: string;
-    description: string;
-    thumbnails: {
-      default: Thumbnail;
-      medium: Thumbnail;
-      high: Thumbnail;
-    }
-    channelTitle: string;
-    localized: string;
-  }
-  contentDetails: {
-    itemCount: number;
-  }
-}
-
-interface Thumbnail {
-  url: string;
-  width: number;
-  height: number;
 }
 
 interface State {

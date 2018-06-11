@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Video } from './Video';
-import { VideoMetadata } from '../App';
+import { VideoMetadata } from '../../../types/YTMetadata';
 
-export class PlaylistContents extends React.Component<Props, {}> {
+export class VideoList extends React.Component<Props, {}> {
   public render() {
     return (
       <div id="folder-contents">

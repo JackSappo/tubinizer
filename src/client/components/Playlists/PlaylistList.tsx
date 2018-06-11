@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Playlist } from './Playlist';
-import { PlaylistMetadata } from '../App';
+import { PlaylistMetadata } from '../../../types/YTMetadata';
 
 export class PlaylistList extends React.Component<Props, {}> {
   render() {
