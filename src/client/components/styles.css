@@ -4,10 +4,13 @@
 
 #sidebar {
   margin-right: 10px;
+  max-width: 150px;
+  background-color: #888;
 }
 
 #folder-contents {
   flex: 1;
+  background-color: #ddd;
 }
 
 .fl-item {

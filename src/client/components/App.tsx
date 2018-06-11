@@ -12,7 +12,10 @@ export class App extends React.Component<{}, State> {
     this.state = {
       isLoading: true,
       playlists: [],
+      playlistItems: [],
     }
+
+    this.getPlaylistItems = this.getPlaylistItems.bind(this);
   }
 
   public async componentDidMount() {
@@ -30,8 +33,8 @@ export class App extends React.Component<{}, State> {
     }
     return (
       <div id="app-container">
-        <PlaylistList playlists={this.state.playlists}/>
-        <PlaylistContents items={[]}/>
+        <PlaylistList playlists={this.state.playlists} getPlaylistItems={this.getPlaylistItems}/>
+        <PlaylistContents items={this.state.playlistItems}/>
       </div>
     )
   }
@@ -50,17 +53,24 @@ export class App extends React.Component<{}, State> {
     return data.items;
   }
 
-  private async getFavoritesItems(playlistId: string, options: FavoritesOptions = {}): Promise<VideoMetadata[]> {
+  private async getPlaylistItems(playlistId: string, options: FavoritesOptions = {}): Promise<void> {
+    console.log('~= GETTING FOR ID', playlistId)
+
+    //TODO: axios type
     const { data } = await axios['get'](YT_PLAYLISTITEMS_URL, {
       params: {
         key: API_KEY,
         part: 'snippet,contentDetails',
-        maxResults: options.maxResults || '5',
+        maxResults: options.maxResults || '20',
         playlistId
       }
     })
 
-    return data.items;
+    console.log('~= DATA IS', data)
+
+    this.setState({
+      playlistItems: data.items
+    })
   }
 }
 
@@ -112,6 +122,9 @@ export interface PlaylistMetadata extends YTMetadata {
     channelTitle: string;
     localized: string;
   }
+  contentDetails: {
+    itemCount: number;
+  }
 }
 
 interface Thumbnail {
@@ -123,5 +136,5 @@ interface Thumbnail {
 interface State {
   isLoading: boolean;
   playlists: PlaylistMetadata[];
-  // favorites: VideoMetadata[];
+  playlistItems: VideoMetadata[];
 }
