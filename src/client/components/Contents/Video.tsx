@@ -6,8 +6,8 @@ export class Video extends React.Component<Props, {}> {
   public render() {
     const { item, selectedVideoId, selectVideo } = this.props;
     const className = classnames(
-      'item',
-      { 'item-selected': selectedVideoId === item.contentDetails.videoId }
+      'vl-item',
+      { 'vl-item-selected': selectedVideoId === item.contentDetails.videoId }
     )
 
     return (

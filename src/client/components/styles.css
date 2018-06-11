@@ -8,27 +8,31 @@
   background-color: #888;
 }
 
-#folder-contents {
+#vl {
   flex: 1;
   background-color: #ddd;
 }
 
-.fl-item {
+.pl-item {
   cursor: pointer;
 }
 
-.fl-icon {
+.pl-item-selected {
+  font-weight: bold;
+}
+
+.pl-icon {
   font-size: 56px;
 }
 
-.fl-text {
+.pl-text {
   text-align: center;
 }
 
-.item {
+.vl-item {
   cursor: default;
 }
 
-.item-selected {
+.vl-item-selected {
   font-weight: bold;
 }

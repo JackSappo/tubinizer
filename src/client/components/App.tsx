@@ -39,6 +39,7 @@ export class App extends React.Component<{}, State> {
       <div id="app-container">
         <PlaylistList 
           playlists={this.state.playlists} 
+          selectedPlaylistId={this.state.selectedPlaylistId}
           getPlaylistItems={this.getPlaylistItems}
         />
         <VideoList 
@@ -100,6 +101,10 @@ export class App extends React.Component<{}, State> {
     this.setState({
       selectedVideoId: videoId,
     })
+  }
+
+  private moveVideo(playlistId) {
+
   }
 }
 

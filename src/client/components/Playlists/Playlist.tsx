@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as classnames from 'classnames';
 import { PlaylistMetadata } from '../../../types/YTMetadata';
 
 export class Playlist extends React.Component<Props, {}> {
@@ -12,11 +13,24 @@ export class Playlist extends React.Component<Props, {}> {
   }
 
   public render() {
-    const { playlist } = this.props;
+    const { playlist, selectedPlaylistId } = this.props;
+    const isSelected = selectedPlaylistId === playlist.id;
+
+    const className = classnames(
+      'pl-item',
+      { 'pl-item-selected': isSelected }
+    )
+    const faClass = classnames(
+      'pl-icon',
+      'fa',
+      isSelected ? 'fa-folder-open' : 'fa-folder'
+    )
+
     return (
-      <div className="fl-item" onClick={this.selectPlaylist}>
-        <i className="fl-icon fa fa-folder" /> <br/>
-        <span className="fl-text">
+      <div className={className} onClick={this.selectPlaylist}>
+        <i className={faClass} />
+        <br/>
+        <span className="pl-text">
           {playlist.snippet.title}
         </span>
       </div>
@@ -26,6 +40,7 @@ export class Playlist extends React.Component<Props, {}> {
 
 interface Props {
   playlist: PlaylistMetadata
+  selectedPlaylistId: string;
   getPlaylistItems: (playlistId: string, options?: object) => Promise<void>
 }
 

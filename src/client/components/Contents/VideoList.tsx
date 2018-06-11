@@ -5,7 +5,7 @@ import { VideoMetadata } from '../../../types/YTMetadata';
 export class VideoList extends React.Component<Props, {}> {
   public render() {
     return (
-      <div id="folder-contents">
+      <div id="vl">
         {this.props.items.map(item => 
           <Video 
             item={item}
