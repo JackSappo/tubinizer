@@ -6,7 +6,13 @@ export class VideoList extends React.Component<Props, {}> {
   public render() {
     return (
       <div id="folder-contents">
-        {this.props.items.map(item => <Video item={item}/>)}
+        {this.props.items.map(item => 
+          <Video 
+            item={item}
+            selectedVideoId={this.props.selectedVideoId}
+            selectVideo={this.props.selectVideo}
+          />
+        )}
       </div>
     )
   }
@@ -14,4 +20,6 @@ export class VideoList extends React.Component<Props, {}> {
 
 interface Props {
   items: VideoMetadata[];
+  selectedVideoId: string | null;
+  selectVideo: (videoId: string) => void;
 }

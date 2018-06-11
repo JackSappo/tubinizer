@@ -1,12 +1,20 @@
 import * as React from 'react';
 import { VideoMetadata } from '../../../types/YTMetadata';
+import * as classnames from 'classnames';
 
 export class Video extends React.Component<Props, {}> {
   public render() {
-    const { item } = this.props;
+    const { item, selectedVideoId, selectVideo } = this.props;
+    const className = classnames(
+      'item',
+      { 'item-selected': selectedVideoId === item.contentDetails.videoId }
+    )
 
     return (
-      <div className="item">
+      <div
+        className={className}
+        onClick={() => selectVideo(item.contentDetails.videoId)}
+      >
         {item.snippet.title}
       </div>
     )
@@ -14,5 +22,7 @@ export class Video extends React.Component<Props, {}> {
 }
 
 interface Props {
-  item: VideoMetadata
+  item: VideoMetadata;
+  selectedVideoId: string | null;
+  selectVideo: (videoId: string) => void;
 }

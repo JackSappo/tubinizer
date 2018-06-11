@@ -13,10 +13,13 @@ export class App extends React.Component<{}, State> {
     this.state = {
       isLoading: true,
       playlists: [],
+      selectedPlaylistId: null,
       playlistItems: [],
+      selectedVideoId: null,
     }
 
     this.getPlaylistItems = this.getPlaylistItems.bind(this);
+    this.selectVideo = this.selectVideo.bind(this);
   }
 
   public async componentDidMount() {
@@ -34,8 +37,15 @@ export class App extends React.Component<{}, State> {
     }
     return (
       <div id="app-container">
-        <PlaylistList playlists={this.state.playlists} getPlaylistItems={this.getPlaylistItems}/>
-        <VideoList items={this.state.playlistItems}/>
+        <PlaylistList 
+          playlists={this.state.playlists} 
+          getPlaylistItems={this.getPlaylistItems}
+        />
+        <VideoList 
+          items={this.state.playlistItems}
+          selectedVideoId={this.state.selectedVideoId}
+          selectVideo={this.selectVideo}
+        />
       </div>
     )
   }
@@ -57,6 +67,10 @@ export class App extends React.Component<{}, State> {
   private async getPlaylistItems(playlistId: string, options: FetchPIOptions = {}): Promise<void> {
     console.log('~= GETTING FOR ID', playlistId)
 
+    if (this.state.selectedPlaylistId === playlistId) {
+      return;
+    }
+
     //TODO: axios type
     const { data } = await axios['get'](YT_PLAYLISTITEMS_URL, {
       params: {
@@ -70,7 +84,21 @@ export class App extends React.Component<{}, State> {
     console.log('~= DATA IS', data)
 
     this.setState({
-      playlistItems: data.items
+      playlistItems: data.items,
+      selectedPlaylistId: playlistId,
+      selectedVideoId: null,
+    })
+  }
+
+  private selectVideo(videoId: string): void {
+    if (this.state.selectedVideoId === videoId) {
+      return this.setState({
+        selectedVideoId: null,
+      })
+    }
+
+    this.setState({
+      selectedVideoId: videoId,
     })
   }
 }
@@ -82,5 +110,7 @@ interface FetchPIOptions {
 interface State {
   isLoading: boolean;
   playlists: PlaylistMetadata[];
+  selectedPlaylistId: string | null;
   playlistItems: VideoMetadata[];
+  selectedVideoId: string | null;
 }
