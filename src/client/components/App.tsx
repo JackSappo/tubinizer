@@ -20,6 +20,7 @@ export class App extends React.Component<{}, State> {
 
     this.getPlaylistItems = this.getPlaylistItems.bind(this);
     this.selectVideo = this.selectVideo.bind(this);
+    this.moveVideo = this.moveVideo.bind(this);
   }
 
   public async componentDidMount() {
@@ -42,6 +43,7 @@ export class App extends React.Component<{}, State> {
           selectedPlaylistId={this.state.selectedPlaylistId}
           selectedVideoId={this.state.selectedVideoId}
           getPlaylistItems={this.getPlaylistItems}
+          moveVideo={this.moveVideo}
         />
         <VideoList 
           items={this.state.playlistItems}
@@ -104,13 +106,16 @@ export class App extends React.Component<{}, State> {
     })
   }
 
-  private moveVideo(playlistId) {
-    /*
-      Add video to other playlist.
-      If successful, remove video from og playlist (should still be the one in props)
-      Q: How do we know ID of old playlist? I guess it's what's currently selected
-    */
-    //TODO: Should never be able to only add or remove unless both are done
+  private moveVideo(videoId: string, oldPlaylistId: string, newPlaylistId: string): void {
+    console.log(`~= MOVING VID ${videoId} FROM PL ${oldPlaylistId} TO PL ${newPlaylistId}`)
+    // Add video to other playlist
+
+    // If successful, remove video from OG playlist
+      // Q: How do we know ID of old playlist? I guess it's what's currently selected
+
+    // If remove unsuccessful, remove from new playlist
+
+    // Deselect
   }
 }
 

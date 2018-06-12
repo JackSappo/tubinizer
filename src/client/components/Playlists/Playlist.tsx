@@ -13,7 +13,7 @@ export class Playlist extends React.Component<Props, {}> {
   }
 
   public render() {
-    const { playlist, selectedVideoId, selectedPlaylistId } = this.props;
+    const { playlist, selectedVideoId, selectedPlaylistId, moveVideo } = this.props;
     const isSelected = selectedPlaylistId === playlist.id;
 
     const className = classnames(
@@ -28,7 +28,10 @@ export class Playlist extends React.Component<Props, {}> {
 
     const renderMover = () => selectedVideoId 
       ? (
-        <span className="pl-mover">
+        <span 
+          className="pl-mover"
+          onClick={() => moveVideo(selectedVideoId, selectedPlaylistId, playlist.id)}
+        >
           <i className="fa fa-arrow-alt-circle-left" />
         </span>
       ) : null;
@@ -36,11 +39,11 @@ export class Playlist extends React.Component<Props, {}> {
     
 
     return (
-      <div className={className} onClick={this.selectPlaylist}>
-        <i className={faClass} />
+      <div className={className}>
+        <i className={faClass} onClick={this.selectPlaylist} />
         { renderMover() }
         <br/>
-        <span className="pl-text">
+        <span className="pl-text" onClick={this.selectPlaylist}>
           {playlist.snippet.title}
         </span>
       </div>
@@ -53,6 +56,7 @@ interface Props {
   selectedPlaylistId: string;
   selectedVideoId: string;
   getPlaylistItems: (playlistId: string, options?: object) => Promise<void>
+  moveVideo: (videoId: string, oldPlaylistId: string, newPlaylistId: string) => void;
 }
 
 interface Video {
