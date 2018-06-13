@@ -1,14 +1,19 @@
 import * as React from 'react';
 import * as axios from 'axios';
-import { YT_CHANNELS_URL, YT_PLAYLISTITEMS_URL, YT_PLAYLISTS_URL } from '../../constants';
 import { API_KEY, CHANNEL_ID } from '../../config';
 import { VideoList } from './Contents/VideoList';
 import { PlaylistList } from './Playlists/PlaylistList'
 import { PlaylistMetadata, VideoMetadata } from '../../types/YTMetadata';
+import { YTProxy, FetchPIOptions } from '../proxies/youtube';
 import './styles.css';
+import { YT_PLAYLISTITEMS_URL } from '../../constants';
 
 export class App extends React.Component<{}, State> {
+  private ytProxy: YTProxy;
+
+  
   constructor(props) {
+    // console.log('~= GAPI IS', gapi)
     super(props);
     this.state = {
       isLoading: true,
@@ -18,13 +23,15 @@ export class App extends React.Component<{}, State> {
       selectedVideoId: null,
     }
 
+    this.ytProxy = new YTProxy();
+
     this.getPlaylistItems = this.getPlaylistItems.bind(this);
     this.selectVideo = this.selectVideo.bind(this);
     this.moveVideo = this.moveVideo.bind(this);
   }
 
   public async componentDidMount() {
-    const playlists = await this.getPlaylists();
+    const playlists = await this.ytProxy.getPlaylists();
     console.log('~= PLAYLISTS ARE', playlists);
     this.setState({
       playlists,
@@ -54,18 +61,16 @@ export class App extends React.Component<{}, State> {
     )
   }
 
-  private async getPlaylists(): Promise<PlaylistMetadata[]> {
-    //TODO: axios type
-    const { data } = await axios['get'](YT_PLAYLISTS_URL, {
-      params: {
-        key: API_KEY,
-        part: 'snippet,contentDetails',
-        maxResults: '20',
-        channelId: CHANNEL_ID,
-      }
-    })
+  private selectVideo(videoId: string): void {
+    const newVideoSelected = this.state.selectedVideoId !== videoId;
 
-    return data.items;
+    this.setState({
+      selectedVideoId: newVideoSelected ? videoId : null
+    })
+  }
+
+  private async getPlaylists(): Promise<PlaylistMetadata[]> {
+    return await this.ytProxy.getPlaylists();
   }
 
   private async getPlaylistItems(playlistId: string, options: FetchPIOptions = {}): Promise<void> {
@@ -75,40 +80,19 @@ export class App extends React.Component<{}, State> {
       return;
     }
 
-    //TODO: axios type
-    const { data } = await axios['get'](YT_PLAYLISTITEMS_URL, {
-      params: {
-        key: API_KEY,
-        part: 'snippet,contentDetails',
-        maxResults: options.maxResults || '20',
-        playlistId
-      }
-    })
-
-    console.log('~= DATA IS', data)
+    const playlistItems = await this.ytProxy.getPlaylistItems(playlistId, options);
 
     this.setState({
-      playlistItems: data.items,
+      playlistItems,
       selectedPlaylistId: playlistId,
       selectedVideoId: null,
-    })
-  }
-
-  private selectVideo(videoId: string): void {
-    if (this.state.selectedVideoId === videoId) {
-      return this.setState({
-        selectedVideoId: null,
-      })
-    }
-
-    this.setState({
-      selectedVideoId: videoId,
     })
   }
 
   private moveVideo(videoId: string, oldPlaylistId: string, newPlaylistId: string): void {
     console.log(`~= MOVING VID ${videoId} FROM PL ${oldPlaylistId} TO PL ${newPlaylistId}`)
     // Add video to other playlist
+    this.ytProxy.addVideo(videoId, newPlaylistId);
 
     // If successful, remove video from OG playlist
       // Q: How do we know ID of old playlist? I guess it's what's currently selected
@@ -117,10 +101,6 @@ export class App extends React.Component<{}, State> {
 
     // Deselect
   }
-}
-
-interface FetchPIOptions {
-  maxResults?: string
 }
 
 interface State {
