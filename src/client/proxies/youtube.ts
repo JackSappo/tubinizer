@@ -1,9 +1,42 @@
 import * as axios from 'axios';
 import { YT_CHANNELS_URL, YT_PLAYLISTITEMS_URL, YT_PLAYLISTS_URL } from '../../constants';
-import { API_KEY, CHANNEL_ID } from '../../config';
+import { API_KEY, CHANNEL_ID, CLIENT_ID } from '../../config';
 import { PlaylistMetadata, VideoMetadata } from '../../types/YTMetadata';
 
 export class YTProxy {
+  public init() {
+    const script = document.createElement("script");
+    script.src = "https://apis.google.com/js/client.js";
+
+    script.onload = async () => {
+      //TODO: Fix type, but may be crazy
+      const gapi = window['gapi']
+      await new Promise((resolve, reject) => {
+        gapi.load('client', () => resolve())
+      })
+
+      console.log('~= WINDOW GAPI IS', gapi)
+      console.log('~= CLIENT IS', gapi.client)
+      await gapi.client.init({
+        'apiKey': API_KEY,
+        'clientId': CLIENT_ID,
+        'scope': 'https://www.googleapis.com/auth/youtube',
+        'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest']
+      })
+
+      console.log('~= CLIENT INITIALIZED')
+
+      const GoogleAuth = gapi.auth2.getAuthInstance();
+
+      // Listen for sign-in state changes.
+      console.log('~= LISTENING')
+      GoogleAuth.isSignedIn.listen();
+      // GoogleAuth.isSignedIn.listen(updateSigninStatus);
+    };
+
+    document.body.appendChild(script);
+  }
+
   public async getPlaylists(): Promise<PlaylistMetadata[]> {
     //TODO: axios type
     const { data } = await axios['get'](YT_PLAYLISTS_URL, {

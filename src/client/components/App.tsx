@@ -31,6 +31,8 @@ export class App extends React.Component<{}, State> {
   }
 
   public async componentDidMount() {
+    this.ytProxy.init();
+
     const playlists = await this.ytProxy.getPlaylists();
     console.log('~= PLAYLISTS ARE', playlists);
     this.setState({
@@ -101,6 +103,7 @@ export class App extends React.Component<{}, State> {
 
     // Deselect
   }
+
 }
 
 interface State {
