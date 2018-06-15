@@ -4,40 +4,45 @@ import { API_KEY, CHANNEL_ID, CLIENT_ID } from '../../config';
 import { PlaylistMetadata, VideoMetadata } from '../../types/YTMetadata';
 
 export class YTProxy {
+  private googleAuth;
+  private gapi;
+  private ytClient;
+
   public init() {
     const script = document.createElement("script");
     script.src = "https://apis.google.com/js/client.js";
 
     script.onload = async () => {
       //TODO: Fix type, but may be crazy
-      const gapi = window['gapi']
+      this.gapi = window['gapi']
       await new Promise((resolve, reject) => {
-        gapi.load('client', () => resolve())
+        this.gapi.load('client', () => resolve())
       })
 
-      console.log('~= WINDOW GAPI IS', gapi)
-      console.log('~= CLIENT IS', gapi.client)
-      await gapi.client.init({
+      await this.gapi.client.init({
         'apiKey': API_KEY,
         'clientId': CLIENT_ID,
         'scope': 'https://www.googleapis.com/auth/youtube',
         'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest']
       })
 
-      console.log('~= CLIENT INITIALIZED')
-
-      const GoogleAuth = gapi.auth2.getAuthInstance();
+      this.ytClient = this.gapi.client.youtube;
+      this.googleAuth = this.gapi.auth2.getAuthInstance();
 
       // Listen for sign-in state changes.
-      console.log('~= LISTENING')
-      GoogleAuth.isSignedIn.listen();
+      // TODO: Consider giving it a CB
+      this.googleAuth.isSignedIn.listen();
       // GoogleAuth.isSignedIn.listen(updateSigninStatus);
+
+      //This is what actually triggers the window, so would be triggered by a login or whatever
+      this.googleAuth.signIn();
     };
 
     document.body.appendChild(script);
   }
 
   public async getPlaylists(): Promise<PlaylistMetadata[]> {
+
     //TODO: axios type
     const { data } = await axios['get'](YT_PLAYLISTS_URL, {
       params: {
@@ -52,31 +57,13 @@ export class YTProxy {
   }
 
   public async getPlaylistItems(playlistId: string, options: FetchPIOptions = {}): Promise<VideoMetadata[]> {
-    // console.log('~= GETTING FOR ID', playlistId)
+    const response = await this.ytClient.playlistItems.list({
+      part: 'snippet,contentDetails',
+      maxResults: options.maxResults || '20',
+      playlistId
+    });
 
-    // if (this.state.selectedPlaylistId === playlistId) {
-    //   return;
-    // }
-
-    //TODO: axios type
-    const { data } = await axios['get'](YT_PLAYLISTITEMS_URL, {
-      params: {
-        key: API_KEY,
-        part: 'snippet,contentDetails',
-        maxResults: options.maxResults || '20',
-        playlistId
-      }
-    })
-
-    console.log('~= DATA IS', data)
-
-    return data.items;
-
-    // this.setState({
-    //   playlistItems: data.items,
-    //   selectedPlaylistId: playlistId,
-    //   selectedVideoId: null,
-    // })
+    return response.result.items;
   }
 
   public async addVideo(videoId: string, playlistId: string) {

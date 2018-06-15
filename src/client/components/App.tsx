@@ -10,7 +10,6 @@ import { YT_PLAYLISTITEMS_URL } from '../../constants';
 
 export class App extends React.Component<{}, State> {
   private ytProxy: YTProxy;
-
   
   constructor(props) {
     // console.log('~= GAPI IS', gapi)
