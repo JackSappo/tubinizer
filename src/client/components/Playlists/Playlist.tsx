@@ -30,7 +30,7 @@ export class Playlist extends React.Component<Props, {}> {
       ? (
         <span 
           className="pl-mover"
-          onClick={() => moveVideo(selectedVideoId, selectedPlaylistId, playlist.id)}
+          onClick={() => moveVideo(playlist.id)}
         >
           <i className="fa fa-arrow-alt-circle-left" />
         </span>
@@ -56,7 +56,7 @@ interface Props {
   selectedPlaylistId: string;
   selectedVideoId: string;
   getPlaylistItems: (playlistId: string, options?: object) => Promise<void>
-  moveVideo: (videoId: string, oldPlaylistId: string, newPlaylistId: string) => void;
+  moveVideo: (newPlaylistId: string) => void;
 }
 
 interface Video {

@@ -23,5 +23,5 @@ interface Props {
   selectedPlaylistId: string;
   selectedVideoId: string;
   getPlaylistItems: (playlistId: string, options?: object) => Promise<void>;
-  moveVideo: (videoId: string, oldPlaylistId: string, newPlaylistId: string) => void;
+  moveVideo: (newPlaylistId: string) => void;
 }
