@@ -95,7 +95,6 @@ export class YTProxy {
     return Promise.resolve(true);
 
     // TODO: If remove unsuccessful, undo the add
-    // TODO: Deselect & refresh current list (or just select new)
   }
 }
 

@@ -85,10 +85,9 @@ export class App extends React.Component<{}, State> {
     })
   }
 
-  //TODO: Should be able to get everything from state excepted newPlaylistId
   private async moveVideo(newPlaylistId: string): Promise<void> {
     const { selectedVideoId, idInPlaylist, selectedPlaylistId } = this.state;
-    
+
     await this.ytProxy.moveVideo(
       selectedVideoId,
       idInPlaylist,
