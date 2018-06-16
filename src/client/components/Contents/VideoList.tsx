@@ -21,5 +21,5 @@ export class VideoList extends React.Component<Props, {}> {
 interface Props {
   items: VideoMetadata[];
   selectedVideoId: string | null;
-  selectVideo: (videoId: string) => void;
+  selectVideo: (videoId: string, idInPlaylist: string) => void;
 }

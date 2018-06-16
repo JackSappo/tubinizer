@@ -13,7 +13,9 @@ export class Video extends React.Component<Props, {}> {
     return (
       <div
         className={className}
-        onClick={() => selectVideo(item.contentDetails.videoId)}
+        onClick={() => {
+          console.log('~= ITEM IS', item)
+          selectVideo(item.contentDetails.videoId, item.id)}}
       >
         {item.snippet.title}
       </div>
@@ -24,5 +26,5 @@ export class Video extends React.Component<Props, {}> {
 interface Props {
   item: VideoMetadata;
   selectedVideoId: string | null;
-  selectVideo: (videoId: string) => void;
+  selectVideo: (videoId: string, idInPlaylist: string) => void;
 }

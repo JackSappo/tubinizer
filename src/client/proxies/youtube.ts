@@ -66,9 +66,9 @@ export class YTProxy {
     return res.result.items;
   }
 
-  public async addVideo(videoId: string, playlistId: string) {
-    console.log('~= ADD EDIT2')
-    const res = await this.ytClient.playlistItems.insert({
+  public addVideo(videoId: string, playlistId: string) {
+    console.log('~= ADDING')
+    return this.ytClient.playlistItems.insert({
       key: API_KEY,
       part: 'snippet',
       resource: {
@@ -81,26 +81,37 @@ export class YTProxy {
         }
       }
     })
-
-    console.log('~= ADDED RES', res)
-    // const res = await axios['post'](YT_PLAYLISTITEMS_URL, {
-    //   snippet: {
-    //     playlistId,
-    //     resourceId: {
-    //       kind: 'youtube#video',
-    //       videoId
-    //     }
-    //   }
-    // }, {
-    //   params: {
-    //     key: API_KEY,
-    //     part: 'snippet'
-    //   }
-    // })
   }
 
-  public moveVideo(videoId: string, oldPlaylistId: string, newPlaylistId: string): void {
-    console.log(`~= MOVING VID ${videoId} FROM PL ${oldPlaylistId} TO PL ${newPlaylistId}`)
+  public removeVideo(videoId: string, playlistId: string) {
+    console.log('~= REMOVING')
+    return this.ytClient.playlistItems.delete({
+      id: videoId
+      // key: API_KEY,
+      // part: 'snippet',
+      // resource: {
+      //   snippet: {
+      //     playlistId,
+      //     resourceId: {
+      //       kind: 'youtube#video',
+      //       videoId
+      //     }
+      //   }
+      // }
+    })
+  }
+
+  public async moveVideo(videoId: string, idInPlaylist: string, oldPlaylistId: string, newPlaylistId: string): Promise<void> {
+    console.log(`~= MOVING VID ${videoId} / ${idInPlaylist} FROM PL ${oldPlaylistId} TO PL ${newPlaylistId}`)
+
+    const addRes = await this.addVideo(videoId, newPlaylistId);
+    console.log('~= ADDRES', addRes)
+
+    const remRes = await this.removeVideo(idInPlaylist, oldPlaylistId)
+
+    console.log('~= REMRES', remRes)
+
+
     // Add video to other playlist
 
     // If successful, remove video from OG playlist

@@ -20,6 +20,7 @@ export class App extends React.Component<{}, State> {
       selectedPlaylistId: null,
       playlistItems: [],
       selectedVideoId: null,
+      idInPlaylist: null,
     }
 
     this.ytProxy = new YTProxy();
@@ -62,11 +63,12 @@ export class App extends React.Component<{}, State> {
     )
   }
 
-  private selectVideo(videoId: string): void {
+  private selectVideo(videoId: string, idInPlaylist: string): void {
     const newVideoSelected = this.state.selectedVideoId !== videoId;
 
     this.setState({
-      selectedVideoId: newVideoSelected ? videoId : null
+      selectedVideoId: newVideoSelected ? videoId : null,
+      idInPlaylist: newVideoSelected ? idInPlaylist: null,
     })
   }
 
@@ -90,17 +92,9 @@ export class App extends React.Component<{}, State> {
     })
   }
 
+  //TODO: Should be able to get everything from state excepted newPlaylistId
   private moveVideo(videoId: string, oldPlaylistId: string, newPlaylistId: string): void {
-    console.log(`~= MOVING VID ${videoId} FROM PL ${oldPlaylistId} TO PL ${newPlaylistId}`)
-    // Add video to other playlist
-    this.ytProxy.addVideo(videoId, newPlaylistId);
-
-    // If successful, remove video from OG playlist
-      // Q: How do we know ID of old playlist? I guess it's what's currently selected
-
-    // If remove unsuccessful, remove from new playlist
-
-    // Deselect
+    this.ytProxy.moveVideo(videoId, this.state.idInPlaylist, oldPlaylistId, newPlaylistId)
   }
 
 }
@@ -111,4 +105,5 @@ interface State {
   selectedPlaylistId: string | null;
   playlistItems: VideoMetadata[];
   selectedVideoId: string | null;
+  idInPlaylist: string | null;
 }
