@@ -72,7 +72,7 @@ export class App extends React.Component<{}, State> {
   }
 
   private async getPlaylistItems(playlistId: string, options: FetchPIOptions = {}): Promise<void> {
-    if (this.state.selectedPlaylistId === playlistId) {
+    if (this.state.selectedPlaylistId === playlistId && !options.force) {
       return;
     }
 
@@ -86,8 +86,15 @@ export class App extends React.Component<{}, State> {
   }
 
   //TODO: Should be able to get everything from state excepted newPlaylistId
-  private moveVideo(videoId: string, oldPlaylistId: string, newPlaylistId: string): void {
-    this.ytProxy.moveVideo(videoId, this.state.idInPlaylist, oldPlaylistId, newPlaylistId)
+  private async moveVideo(videoId: string, oldPlaylistId: string, newPlaylistId: string): Promise<void> {
+    await this.ytProxy.moveVideo(
+      videoId,
+      this.state.idInPlaylist,
+      oldPlaylistId,
+      newPlaylistId
+    )
+
+    this.getPlaylistItems(oldPlaylistId, { force: true });
   }
 }
 

@@ -88,9 +88,11 @@ export class YTProxy {
     })
   }
 
-  public async moveVideo(videoId: string, idInPlaylist: string, oldPlaylistId: string, newPlaylistId: string): Promise<void> {
+  public async moveVideo(videoId: string, idInPlaylist: string, oldPlaylistId: string, newPlaylistId: string): Promise<boolean> {
     await this.addVideo(videoId, newPlaylistId);
     await this.removeVideo(idInPlaylist, oldPlaylistId)
+
+    return Promise.resolve(true);
 
     // TODO: If remove unsuccessful, undo the add
     // TODO: Deselect & refresh current list (or just select new)
@@ -99,4 +101,5 @@ export class YTProxy {
 
 export interface FetchPIOptions {
   maxResults?: string
+  force?: boolean
 }
