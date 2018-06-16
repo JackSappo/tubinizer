@@ -14,7 +14,6 @@ export class Video extends React.Component<Props, {}> {
       <div
         className={className}
         onClick={() => {
-          console.log('~= ITEM IS', item)
           selectVideo(item.contentDetails.videoId, item.id)}}
       >
         {item.snippet.title}

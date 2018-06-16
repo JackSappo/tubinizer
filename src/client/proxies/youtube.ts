@@ -1,6 +1,4 @@
-import * as axios from 'axios';
-import { YT_CHANNELS_URL, YT_PLAYLISTITEMS_URL, YT_PLAYLISTS_URL } from '../../constants';
-import { API_KEY, CHANNEL_ID, CLIENT_ID } from '../../config';
+import { API_KEY, CLIENT_ID } from '../../config';
 import { PlaylistMetadata, VideoMetadata } from '../../types/YTMetadata';
 
 export class YTProxy {
@@ -46,9 +44,7 @@ export class YTProxy {
         })
     };
 
-    console.log('~= APPENDING')
     document.body.appendChild(script);
-    console.log('~= APPENDED')
   }
 
   public async getPlaylists(): Promise<PlaylistMetadata[]> {
@@ -57,8 +53,6 @@ export class YTProxy {
       maxResults: '20',
       mine: true,
     })
-
-    console.log('~= PL RES', res);
 
     return res.result.items;
   }
@@ -74,9 +68,7 @@ export class YTProxy {
   }
 
   public addVideo(videoId: string, playlistId: string) {
-    console.log('~= ADDING')
     return this.ytClient.playlistItems.insert({
-      // key: API_KEY,
       part: 'snippet',
       resource: {
         snippet: {
@@ -91,25 +83,17 @@ export class YTProxy {
   }
 
   public removeVideo(videoId: string, playlistId: string) {
-    console.log('~= REMOVING')
     return this.ytClient.playlistItems.delete({
       id: videoId
     })
   }
 
   public async moveVideo(videoId: string, idInPlaylist: string, oldPlaylistId: string, newPlaylistId: string): Promise<void> {
-    console.log(`~= MOVING VID ${videoId} / ${idInPlaylist} FROM PL ${oldPlaylistId} TO PL ${newPlaylistId}`)
+    await this.addVideo(videoId, newPlaylistId);
+    await this.removeVideo(idInPlaylist, oldPlaylistId)
 
-    const addRes = await this.addVideo(videoId, newPlaylistId);
-    console.log('~= ADDRES', addRes)
-
-    const remRes = await this.removeVideo(idInPlaylist, oldPlaylistId)
-
-    console.log('~= REMRES', remRes)
-
-    // TODO: If remove unsuccessful, remove from new playlist
-
-    // TODO: Deselect & refresh
+    // TODO: If remove unsuccessful, undo the add
+    // TODO: Deselect & refresh current list (or just select new)
   }
 }
 

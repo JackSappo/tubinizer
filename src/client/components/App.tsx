@@ -1,18 +1,14 @@
 import * as React from 'react';
-import * as axios from 'axios';
-import { API_KEY, CHANNEL_ID } from '../../config';
 import { VideoList } from './Contents/VideoList';
 import { PlaylistList } from './Playlists/PlaylistList'
 import { PlaylistMetadata, VideoMetadata } from '../../types/YTMetadata';
 import { YTProxy, FetchPIOptions } from '../proxies/youtube';
 import './styles.css';
-import { YT_PLAYLISTITEMS_URL } from '../../constants';
 
 export class App extends React.Component<{}, State> {
   private ytProxy: YTProxy;
   
   constructor(props) {
-    // console.log('~= GAPI IS', gapi)
     super(props);
     this.state = {
       isLoading: true,
@@ -32,16 +28,7 @@ export class App extends React.Component<{}, State> {
   }
 
   public async componentDidMount() {
-    console.log('~= INITTING')
     this.ytProxy.init(this.getPlaylists);
-    console.log('~= INITTED')
-
-    // const playlists = await this.ytProxy.getPlaylists();
-    // console.log('~= PLAYLISTS ARE', playlists);
-    // this.setState({
-    //   playlists,
-    //   isLoading: false,
-    // })
   }
 
   public render() {
@@ -77,7 +64,7 @@ export class App extends React.Component<{}, State> {
 
   private async getPlaylists(): Promise<void> {
     const playlists = await this.ytProxy.getPlaylists();
-    console.log('~= METHOD PLAYLISTS', playlists)
+
     this.setState({
       playlists,
       isLoading: false
@@ -85,8 +72,6 @@ export class App extends React.Component<{}, State> {
   }
 
   private async getPlaylistItems(playlistId: string, options: FetchPIOptions = {}): Promise<void> {
-    console.log('~= GETTING FOR ID', playlistId)
-
     if (this.state.selectedPlaylistId === playlistId) {
       return;
     }
@@ -104,7 +89,6 @@ export class App extends React.Component<{}, State> {
   private moveVideo(videoId: string, oldPlaylistId: string, newPlaylistId: string): void {
     this.ytProxy.moveVideo(videoId, this.state.idInPlaylist, oldPlaylistId, newPlaylistId)
   }
-
 }
 
 interface State {
