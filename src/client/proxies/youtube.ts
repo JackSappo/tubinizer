@@ -57,30 +57,46 @@ export class YTProxy {
   }
 
   public async getPlaylistItems(playlistId: string, options: FetchPIOptions = {}): Promise<VideoMetadata[]> {
-    const response = await this.ytClient.playlistItems.list({
+    const res = await this.ytClient.playlistItems.list({
       part: 'snippet,contentDetails',
       maxResults: options.maxResults || '20',
       playlistId
     });
 
-    return response.result.items;
+    return res.result.items;
   }
 
   public async addVideo(videoId: string, playlistId: string) {
-    const res = await axios['post'](YT_PLAYLISTITEMS_URL, {
-      snippet: {
-        playlistId,
-        resourceId: {
-          kind: 'youtube#video',
-          videoId
+    console.log('~= ADD EDIT2')
+    const res = await this.ytClient.playlistItems.insert({
+      key: API_KEY,
+      part: 'snippet',
+      resource: {
+        snippet: {
+          playlistId,
+          resourceId: {
+            kind: 'youtube#video',
+            videoId
+          }
         }
       }
-    }, {
-      params: {
-        key: API_KEY,
-        part: 'snippet'
-      }
     })
+
+    console.log('~= ADDED RES', res)
+    // const res = await axios['post'](YT_PLAYLISTITEMS_URL, {
+    //   snippet: {
+    //     playlistId,
+    //     resourceId: {
+    //       kind: 'youtube#video',
+    //       videoId
+    //     }
+    //   }
+    // }, {
+    //   params: {
+    //     key: API_KEY,
+    //     part: 'snippet'
+    //   }
+    // })
   }
 
   public moveVideo(videoId: string, oldPlaylistId: string, newPlaylistId: string): void {
