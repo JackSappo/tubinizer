@@ -25,20 +25,23 @@ export class App extends React.Component<{}, State> {
 
     this.ytProxy = new YTProxy();
 
+    this.getPlaylists = this.getPlaylists.bind(this);
     this.getPlaylistItems = this.getPlaylistItems.bind(this);
     this.selectVideo = this.selectVideo.bind(this);
     this.moveVideo = this.moveVideo.bind(this);
   }
 
   public async componentDidMount() {
-    this.ytProxy.init();
+    console.log('~= INITTING')
+    this.ytProxy.init(this.getPlaylists);
+    console.log('~= INITTED')
 
-    const playlists = await this.ytProxy.getPlaylists();
-    console.log('~= PLAYLISTS ARE', playlists);
-    this.setState({
-      playlists,
-      isLoading: false,
-    })
+    // const playlists = await this.ytProxy.getPlaylists();
+    // console.log('~= PLAYLISTS ARE', playlists);
+    // this.setState({
+    //   playlists,
+    //   isLoading: false,
+    // })
   }
 
   public render() {
@@ -72,8 +75,13 @@ export class App extends React.Component<{}, State> {
     })
   }
 
-  private async getPlaylists(): Promise<PlaylistMetadata[]> {
-    return await this.ytProxy.getPlaylists();
+  private async getPlaylists(): Promise<void> {
+    const playlists = await this.ytProxy.getPlaylists();
+    console.log('~= METHOD PLAYLISTS', playlists)
+    this.setState({
+      playlists,
+      isLoading: false
+    })
   }
 
   private async getPlaylistItems(playlistId: string, options: FetchPIOptions = {}): Promise<void> {

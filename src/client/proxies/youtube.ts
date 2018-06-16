@@ -8,7 +8,7 @@ export class YTProxy {
   private gapi;
   private ytClient;
 
-  public init() {
+  public init(onSuccess?, onFail?) {
     const script = document.createElement("script");
     script.src = "https://apis.google.com/js/client.js";
 
@@ -29,31 +29,38 @@ export class YTProxy {
       this.ytClient = this.gapi.client.youtube;
       this.googleAuth = this.gapi.auth2.getAuthInstance();
 
-      // Listen for sign-in state changes.
-      // TODO: Consider giving it a CB
-      this.googleAuth.isSignedIn.listen();
-      // GoogleAuth.isSignedIn.listen(updateSigninStatus);
+      // Listen for sign-in state changes. Doesn't seem to trigger
+      this.googleAuth.isSignedIn.listen(isSignedIn => {
+        console.log('~= SIGNIN STATUS CHANGED TO', isSignedIn)
+      });
 
       //This is what actually triggers the window, so would be triggered by a login or whatever
-      this.googleAuth.signIn();
+      this.googleAuth.signIn()
+        .then((() => {
+          console.log('~= SIGNIN SUCCESSFUL')
+          if (onSuccess) onSuccess()
+        }))
+        .catch(err => {
+          console.error('~= SIGNIN FAILED', err)
+          if (onFail) onFail()
+        })
     };
 
+    console.log('~= APPENDING')
     document.body.appendChild(script);
+    console.log('~= APPENDED')
   }
 
   public async getPlaylists(): Promise<PlaylistMetadata[]> {
-
-    //TODO: axios type
-    const { data } = await axios['get'](YT_PLAYLISTS_URL, {
-      params: {
-        key: API_KEY,
-        part: 'snippet,contentDetails',
-        maxResults: '20',
-        channelId: CHANNEL_ID,
-      }
+    const res = await this.ytClient.playlists.list({
+      part: 'snippet',
+      maxResults: '20',
+      mine: true,
     })
-    
-    return data.items;
+
+    console.log('~= PL RES', res);
+
+    return res.result.items;
   }
 
   public async getPlaylistItems(playlistId: string, options: FetchPIOptions = {}): Promise<VideoMetadata[]> {
@@ -69,7 +76,7 @@ export class YTProxy {
   public addVideo(videoId: string, playlistId: string) {
     console.log('~= ADDING')
     return this.ytClient.playlistItems.insert({
-      key: API_KEY,
+      // key: API_KEY,
       part: 'snippet',
       resource: {
         snippet: {
@@ -87,17 +94,6 @@ export class YTProxy {
     console.log('~= REMOVING')
     return this.ytClient.playlistItems.delete({
       id: videoId
-      // key: API_KEY,
-      // part: 'snippet',
-      // resource: {
-      //   snippet: {
-      //     playlistId,
-      //     resourceId: {
-      //       kind: 'youtube#video',
-      //       videoId
-      //     }
-      //   }
-      // }
     })
   }
 
@@ -111,15 +107,9 @@ export class YTProxy {
 
     console.log('~= REMRES', remRes)
 
+    // TODO: If remove unsuccessful, remove from new playlist
 
-    // Add video to other playlist
-
-    // If successful, remove video from OG playlist
-      // Q: How do we know ID of old playlist? I guess it's what's currently selected
-
-    // If remove unsuccessful, remove from new playlist
-
-    // Deselect
+    // TODO: Deselect & refresh
   }
 }
 
