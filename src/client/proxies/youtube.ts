@@ -48,6 +48,7 @@ export class YTProxy {
   }
 
   public async getPlaylists(): Promise<PlaylistMetadata[]> {
+    console.log('~= PROXY GETTING PLAYLISTS')
     const res = await this.ytClient.playlists.list({
       part: 'snippet',
       maxResults: '20',

@@ -1,11 +1,15 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { VideoList } from './Contents/VideoList';
 import { PlaylistList } from './Playlists/PlaylistList'
 import { PlaylistMetadata, VideoMetadata } from '../../types/YTMetadata';
 import { YTProxy, FetchPIOptions } from '../proxies/youtube';
+import { getPlaylists } from '../actions'
 import './styles.css';
 
-export class App extends React.Component<{}, State> {
+const ytProxy = new YTProxy();
+
+class App extends React.Component<any,any> {
   private ytProxy: YTProxy;
   
   constructor(props) {
@@ -19,7 +23,7 @@ export class App extends React.Component<{}, State> {
       idInPlaylist: null,
     }
 
-    this.ytProxy = new YTProxy();
+    this.ytProxy = ytProxy;
 
     this.getPlaylists = this.getPlaylists.bind(this);
     this.getPlaylistItems = this.getPlaylistItems.bind(this);
@@ -28,10 +32,11 @@ export class App extends React.Component<{}, State> {
   }
 
   public async componentDidMount() {
-    this.ytProxy.init(this.getPlaylists);
+    this.ytProxy.init(this.props.getPlaylists);
   }
 
   public render() {
+    console.log('~= PROPS REDUXPLAYLISTS', this.props.reduxPlaylists)
     if (this.state.isLoading) {
       return <div>Sup I'm loading</div>
     }
@@ -98,6 +103,19 @@ export class App extends React.Component<{}, State> {
     this.getPlaylistItems(selectedPlaylistId, { force: true });
   }
 }
+
+const mapStateToProps = state => ({
+  reduxPlaylists: state.reduxPlaylists
+})
+
+const mapDispatchToProps = dispatch => ({
+  getPlaylists: () => dispatch(getPlaylists(ytProxy))
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App)
 
 interface State {
   isLoading: boolean;
