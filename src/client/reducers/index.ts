@@ -3,6 +3,6 @@ import { playlists } from './playlists';
 import { isLoading } from './loadStatus';
 
 export default combineReducers({
-  reduxPlaylists: playlists,
+  playlists,
   isLoading
 })

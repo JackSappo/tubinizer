@@ -9,14 +9,12 @@ import './styles.css';
 
 const ytProxy = new YTProxy();
 
-class App extends React.Component<any,any> {
+class App extends React.Component<Props,State> {
   private ytProxy: YTProxy;
   
   constructor(props) {
     super(props);
     this.state = {
-      // isLoading: true,
-      playlists: [],
       selectedPlaylistId: null,
       playlistItems: [],
       selectedVideoId: null,
@@ -25,7 +23,6 @@ class App extends React.Component<any,any> {
 
     this.ytProxy = ytProxy;
 
-    this.getPlaylists = this.getPlaylists.bind(this);
     this.getPlaylistItems = this.getPlaylistItems.bind(this);
     this.selectVideo = this.selectVideo.bind(this);
     this.moveVideo = this.moveVideo.bind(this);
@@ -36,14 +33,13 @@ class App extends React.Component<any,any> {
   }
 
   public render() {
-    console.log('~= PROPS REDUXPLAYLISTS', this.props.reduxPlaylists)
     if (this.props.isLoading) {
       return <div>Sup I'm loading</div>
     }
     return (
       <div id="app-container">
         <PlaylistList 
-          playlists={this.props.reduxPlaylists} 
+          playlists={this.props.playlists} 
           selectedPlaylistId={this.state.selectedPlaylistId}
           selectedVideoId={this.state.selectedVideoId}
           getPlaylistItems={this.getPlaylistItems}
@@ -64,15 +60,6 @@ class App extends React.Component<any,any> {
     this.setState({
       selectedVideoId: newVideoSelected ? videoId : null,
       idInPlaylist: newVideoSelected ? idInPlaylist: null,
-    })
-  }
-
-  private async getPlaylists(): Promise<void> {
-    const playlists = await this.ytProxy.getPlaylists();
-
-    this.setState({
-      playlists,
-      isLoading: false
     })
   }
 
@@ -105,7 +92,7 @@ class App extends React.Component<any,any> {
 }
 
 const mapStateToProps = state => ({
-  reduxPlaylists: state.reduxPlaylists,
+  playlists: state.playlists,
   isLoading: state.isLoading,
 })
 
@@ -118,9 +105,13 @@ export default connect(
   mapDispatchToProps
 )(App)
 
-interface State {
+interface Props {
   isLoading: boolean;
   playlists: PlaylistMetadata[];
+  fetchPlaylists: (ytProxy: YTProxy) => PlaylistMetadata[]
+}
+
+interface State {
   selectedPlaylistId: string | null;
   playlistItems: VideoMetadata[];
   selectedVideoId: string | null;

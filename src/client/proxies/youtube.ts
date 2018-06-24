@@ -36,7 +36,6 @@ export class YTProxy {
       this.googleAuth.signIn()
         .then((() => {
           console.log('~= SIGNIN SUCCESSFUL')
-          console.log('~= ONSUCCESS IS', onSuccess)
           if (onSuccess) onSuccess()
         }))
         .catch(err => {
@@ -49,7 +48,6 @@ export class YTProxy {
   }
 
   public async getPlaylists(): Promise<PlaylistMetadata[]> {
-    console.log('~= PROXY GETTING PLAYLISTS')
     const res = await this.ytClient.playlists.list({
       part: 'snippet',
       maxResults: '20',

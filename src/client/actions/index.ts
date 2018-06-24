@@ -1,10 +1,10 @@
 export const REQUEST_PLAYLISTS = 'REQUEST_PLAYLISTS';
 export const RECEIVE_PLAYLISTS = 'RECEIVE_PLAYLISTS';
 
-export function fetchPlaylists (ytProxy) {
-  console.log('~= FETCH PL ACTION')
+type ThunkAction = (dispatch: any) => Promise<void>
+
+export function fetchPlaylists (ytProxy): ThunkAction {
   return async function (dispatch) {
-    console.log('~= THUNKING')
     dispatch({
       type: REQUEST_PLAYLISTS,
     })
