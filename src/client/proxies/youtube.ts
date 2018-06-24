@@ -36,6 +36,7 @@ export class YTProxy {
       this.googleAuth.signIn()
         .then((() => {
           console.log('~= SIGNIN SUCCESSFUL')
+          console.log('~= ONSUCCESS IS', onSuccess)
           if (onSuccess) onSuccess()
         }))
         .catch(err => {

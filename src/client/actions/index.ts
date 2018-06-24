@@ -1,19 +1,18 @@
-// export function getPlaylists (ytProxy) {
-//   console.log('~= DISPATCHING ACTION')
-//   return {
-//     type: 'GET_PLAYLISTS',
-//     payload: ytProxy.getPlaylists(),
-//   }
-// }
+export const REQUEST_PLAYLISTS = 'REQUEST_PLAYLISTS';
+export const RECEIVE_PLAYLISTS = 'RECEIVE_PLAYLISTS';
 
-export function getPlaylists (ytProxy) {
-  console.log('~= DISPATCHING ACTION')
-  return function (dispatch) {
-    console.log('~= THUNKIN')
+export function fetchPlaylists (ytProxy) {
+  console.log('~= FETCH PL ACTION')
+  return async function (dispatch) {
+    console.log('~= THUNKING')
+    dispatch({
+      type: REQUEST_PLAYLISTS,
+    })
+
     return ytProxy.getPlaylists()
       .then(playlists => {
         dispatch({
-          type: 'GET_PLAYLISTS',
+          type: RECEIVE_PLAYLISTS,
           payload: playlists,
         })
       })
