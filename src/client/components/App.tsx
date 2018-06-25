@@ -4,8 +4,9 @@ import { VideoList } from './Contents/VideoList';
 import { PlaylistList } from './Playlists/PlaylistList'
 import { PlaylistMetadata, VideoMetadata } from '../../types/YTMetadata';
 import { YTProxy, FetchPIOptions } from '../proxies/youtube';
-import { fetchPlaylists } from '../actions'
+import { fetchPlaylists, signIn } from '../actions'
 import './styles.css';
+import CPlaylistList from './Playlists/CPlaylistList';
 
 const ytProxy = new YTProxy();
 
@@ -29,17 +30,17 @@ class App extends React.Component<Props,State> {
   }
 
   public async componentDidMount() {
-    this.ytProxy.init(this.props.fetchPlaylists);
+    this.ytProxy.init(this.props.signIn);
   }
 
   public render() {
-    if (this.props.isLoading) {
+    if (!this.props.authed) {
       return <div>Sup I'm loading</div>
     }
     return (
       <div id="app-container">
-        <PlaylistList 
-          playlists={this.props.playlists} 
+        <CPlaylistList 
+          ytProxy={this.ytProxy}
           selectedPlaylistId={this.state.selectedPlaylistId}
           selectedVideoId={this.state.selectedVideoId}
           getPlaylistItems={this.getPlaylistItems}
@@ -94,10 +95,11 @@ class App extends React.Component<Props,State> {
 const mapStateToProps = state => ({
   playlists: state.playlists,
   isLoading: state.isLoading,
+  authed: state.authed,
 })
 
 const mapDispatchToProps = dispatch => ({
-  fetchPlaylists: () => dispatch(fetchPlaylists(ytProxy))
+  signIn: () => dispatch(signIn()),
 })
 
 export default connect(
@@ -106,9 +108,9 @@ export default connect(
 )(App)
 
 interface Props {
-  isLoading: boolean;
   playlists: PlaylistMetadata[];
-  fetchPlaylists: (ytProxy: YTProxy) => PlaylistMetadata[]
+  signIn: () => void,
+  authed: boolean;
 }
 
 interface State {
